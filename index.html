@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gorilla Tag Modding Database</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        #search-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        #search-box {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #search-button, #clear-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            color: white;
+        }
+        #search-button {
+            background-color: #4CAF50;
+        }
+        #clear-button {
+            background-color: #f44336;
+            margin-left: 10px;
+        }
+        #search-results {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        #mod-list {
+            margin-top: 20px;
+        }
+        .mod-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .mod-item h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .download-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+        .author {
+            font-style: italic;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gorilla Tag Modding Database</h1>
+        <div id="search-container">
+            <input type="text" id="search-box" placeholder="Search for mods...">
+            <button id="search-button">Search</button>
+            <button id="clear-button">Clear</button>
+        </div>
+        <div id="search-results"></div>
+        <div id="mod-list">
+            <!-- Mod items will be dynamically added here -->
+        </div>
+    </div>
+
+    <script>
+        const mods = [
+            {
+                name: "JoystickSpeedBoost",
+                description: "This mod provides a speed boost based on the state of the right joystick: Right joystick pressed down: You receive a speed boost of 6 / 0.8. Right joystick not pressed down: You have a speed boost of 8 / 1.2, also known as the Mosa settings boost.",
+                author: "Ace",
+                downloadLink: "https://cdn.discordapp.com/attachments/1267272933324357714/1267273597421092946/JoystickSpeedBoost.dll?ex=66d1b742&is=66d065c2&hm=841d077f4d5b194c897fe6e7b12b84e0c84ec5d158e76ad5d4c0d61dd5ec4b46&"
+            },
+            {
+                name: "DataTrackerAdvanced",
+                description: "Photon Data Tracker Advanced is a mod designed for use with Photon Unity Networking (PUN) in Gorilla Tag, aimed at tracking and logging player data and cosmetics in multiplayer environments.",
+                author: "Ace",
+                downloadLink: "https://cdn.discordapp.com/attachments/1249015550206541984/1274179228673376326/DataLoggerAdvanced.dll?ex=66d1ca21&is=66d078a1&hm=1919c19aa7fc0ef1e1440753033866bdb382c24fbe38ae7ec7e5f05b7bafc1fe&"
+            },
+            {
+                name: "Ultimate Speed Boost Manager",
+                description: "Ultimate Speed Boost Manager is an open-source BepInEx mod for Gorilla Tag that allows players to customize their movement speed and jump height for different controller inputs. This mod enhances gameplay by providing fine-tuned control over your gorilla's agility.",
+                author: "Ace",
+                downloadLink: "https://cdn.discordapp.com/attachments/1267678363883929733/1267884649435107408/ultimate-Speed-Boost-Manager.dll?ex=66d1f618&is=66d0a498&hm=539b7469577171829cffb8689f9eb0ceab1b19fd34ee26d1262c0c1e1362a0b9&"
+            },
+            {
+                name: "GorillaCraft",
+                description: "GorillaCraft is packaged in with eighty blocks accessible to any player using the mod. These blocks can range from different forms and behaviours you can use to structure your own creators.",
+                author: "dev9998",
+                downloadLink: "https://cdn.discordapp.com/attachments/1242708526845919262/1244728314032160909/GorillaCraft.dll?ex=66d21813&is=66d0c693&hm=fcacec485a9ac9a9708636c650266c808a70a1b1fce61006b4f539f76cc85a68&"
+            },
+            {
+                name: "Mono Sandbox",
+                description: "MonoSandbox is a mod for the virtual reality game Gorilla Tag which introduces a sandbox-based menu inspired by Gary's Mod.",
+                author: "monosphere",
+                downloadLink: "https://cdn.discordapp.com/attachments/1242708194954973265/1242708258628833320/MonoSandbox.dll?ex=66d1ff01&is=66d0ad81&hm=2f5b5a54d854899f77a8b5258e78e4f57571888b0a5f8c3e7a174270b1ae6744&"
+            },
+            {
+                name: "Tic-tac-toe",
+                description: "Allows you to play tic-tac-toe in Gorilla Tag.",
+                author: "jusky",
+                downloadLink: "https://cdn.discordapp.com/attachments/1232865447830093895/1232865565190656064/TicTacToe.dll?ex=66d1c8c8&is=66d07748&hm=ffca5bdaf9907ff92aee141df3432523c204590308dc6e47bc70f3753b636e42&"
+            }
+        ];
+
+        function displayMods(modsToShow) {
+            const modList = document.getElementById('mod-list');
+            modList.innerHTML = '';
+            modsToShow.forEach(mod => {
+                const modItem = document.createElement('div');
+                modItem.classList.add('mod-item');
+                modItem.innerHTML = `
+                    <h3>${mod.name}</h3>
+                    <p>${mod.description}</p>
+                    <p class="author">Made by ${mod.author}</p>
+                    <a href="${mod.downloadLink}" class="download-link" target="_blank">Download</a>
+                `;
+                modList.appendChild(modItem);
+            });
+        }
+
+        function searchMods() {
+            const searchTerm = document.getElementById('search-box').value.toLowerCase();
+            const filteredMods = mods.filter(mod => 
+                mod.name.toLowerCase().includes(searchTerm) || 
+                mod.description.toLowerCase().includes(searchTerm) ||
+                mod.author.toLowerCase().includes(searchTerm)
+            );
+            displayMods(filteredMods);
+            updateSearchResults(filteredMods.length);
+        }
+
+        function updateSearchResults(count) {
+            const searchResults = document.getElementById('search-results');
+            if (count === mods.length) {
+                searchResults.textContent = `Showing all ${count} mods`;
+            } else {
+                searchResults.textContent = `Found ${count} mod${count !== 1 ? 's' : ''}`;
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('search-box').value = '';
+            displayMods(mods);
+            updateSearchResults(mods.length);
+        }
+
+        document.getElementById('search-button').addEventListener('click', searchMods);
+        document.getElementById('clear-button').addEventListener('click', clearSearch);
+        document.getElementById('search-box').addEventListener('input', searchMods);
+
+        // Initially display all mods
+        displayMods(mods);
+        updateSearchResults(mods.length);
+    </script>
+</body>
+</html>
