@@ -227,3 +227,131 @@
         function toggleMakerSelect() {
             const makerSelect = document.getElementById('maker-select');
             makerSelect.style.display = makerSelect.
+<script>
+        const mods = [
+            {
+                name: "JoystickSpeedBoost",
+                description: "This mod provides a speed boost based on the state of the right joystick: Right joystick pressed down: You receive a speed boost of 6 / 0.8. Right joystick not pressed down: You have a speed boost of 8 / 1.2, also known as the Mosa settings boost.",
+                author: "Ace",
+                downloadLink: "https://cdn.discordapp.com/attachments/1267272933324357714/1267273597421092946/JoystickSpeedBoost.dll?ex=66d1b742&is=66d065c2&hm=841d077f4d5b194c897fe6e7b12b84e0c84ec5d158e76ad5d4c0d61dd5ec4b46&"
+            },
+            {
+                name: "DataTrackerAdvanced",
+                description: "Photon Data Tracker Advanced is a mod designed for use with Photon Unity Networking (PUN) in Gorilla Tag, aimed at tracking and logging player data and cosmetics in multiplayer environments.",
+                author: "Ace",
+                downloadLink: "https://cdn.discordapp.com/attachments/1249015550206541984/1274179228673376326/DataLoggerAdvanced.dll?ex=66d1ca21&is=66d078a1&hm=1919c19aa7fc0ef1e1440753033866bdb382c24fbe38ae7ec7e5f05b7bafc1fe&"
+            },
+            {
+                name: "Ultimate Speed Boost Manager",
+                description: "Ultimate Speed Boost Manager is an open-source BepInEx mod for Gorilla Tag that allows players to customize their movement speed and jump height for different controller inputs. This mod enhances gameplay by providing fine-tuned control over your gorilla's agility.",
+                author: "Ace",
+                downloadLink: "https://cdn.discordapp.com/attachments/1267678363883929733/1267884649435107408/ultimate-Speed-Boost-Manager.dll?ex=66d1f618&is=66d0a498&hm=539b7469577171829cffb8689f9eb0ceab1b19fd34ee26d1262c0c1e1362a0b9&"
+            },
+            {
+                name: "GorillaCraft",
+                description: "GorillaCraft is packaged in with eighty blocks accessible to any player using the mod. These blocks can range from different forms and behaviours you can use to structure your own creators.",
+                author: "dev9998",
+                downloadLink: "https://cdn.discordapp.com/attachments/1242708526845919262/1244728314032160909/GorillaCraft.dll?ex=66d21813&is=66d0c693&hm=fcacec485a9ac9a9708636c650266c808a70a1b1fce61006b4f539f76cc85a68&"
+            },
+            {
+                name: "Mono Sandbox",
+                description: "MonoSandbox is a mod for the virtual reality game Gorilla Tag which introduces a sandbox-based menu inspired by Gary's Mod.",
+                author: "monosphere",
+                downloadLink: "https://cdn.discordapp.com/attachments/1242708194954973265/1242708258628833320/MonoSandbox.dll?ex=66d1ff01&is=66d0ad81&hm=2f5b5a54d854899f77a8b5258e78e4f57571888b0a5f8c3e7a174270b1ae6744&"
+            },
+            {
+                name: "Tic-tac-toe",
+                description: "Allows you to play tic-tac-toe in Gorilla Tag.",
+                author: "jusky",
+                downloadLink: "https://cdn.discordapp.com/attachments/1232865447830093895/1232865565190656064/TicTacToe.dll?ex=66d1c8c8&is=66d07748&hm=ffca5bdaf9907ff92aee141df3432523c204590308dc6e47bc70f3753b636e42&"
+            },
+            {
+                name: "MONKE MUSIC",
+                description: "This mod allows you to listen to custom music in Gorilla Tag!",
+                author: "pl2w",
+                downloadLink: "https://cdn.discordapp.com/attachments/1247050651289260163/1247052489749037076/monkemusic.zip?ex=66d1fae2&is=66d0a962&hm=62997656feefa67e9d08effb4e165fe6401123eddccc0be2c8eac1fa998df5d9&"
+            },
+            {
+                name: "Gorilla Info Watch",
+                description: "GorillaInfoWatch is a utility mod for Gorilla Tag, which allows players to use the portable graphic interfacial watch created by the mod, and developers to implement their own information and logic using the mod.",
+                author: "dev9998",
+                downloadLink: "https://cdn.discordapp.com/attachments/1242709086873583616/1244728252258586654/GorillaInfoWatch.zip?ex=66d21805&is=66d0c685&hm=0a992a8a047ff0c8ded9e8bde0bfed6c0490a20477c4372abb05d4a3a3f9c413&"
+            }
+        ];
+
+        function displayMods(modsToShow) {
+            const modList = document.getElementById('mod-list');
+            modList.innerHTML = '';
+            modsToShow.forEach(mod => {
+                const modItem = document.createElement('div');
+                modItem.classList.add('mod-item');
+                modItem.innerHTML = `
+                    <h3>${mod.name}</h3>
+                    <p>${mod.description}</p>
+                    <p class="author">Made by ${mod.author}</p>
+                    <a href="${mod.downloadLink}" class="download-link" target="_blank">Download</a>
+                `;
+                modList.appendChild(modItem);
+            });
+        }
+
+        function searchMods() {
+            const searchTerm = document.getElementById('search-box').value.toLowerCase();
+            const filteredMods = mods.filter(mod => 
+                mod.name.toLowerCase().includes(searchTerm) || 
+                mod.description.toLowerCase().includes(searchTerm) ||
+                mod.author.toLowerCase().includes(searchTerm)
+            );
+            displayMods(filteredMods);
+            updateSearchResults(filteredMods.length);
+        }
+
+        function updateSearchResults(count) {
+            const searchResults = document.getElementById('search-results');
+            if (count === mods.length) {
+                searchResults.textContent = `Showing all ${count} mods`;
+            } else {
+                searchResults.textContent = `Found ${count} mod${count !== 1 ? 's' : ''}`;
+            }
+        }
+
+        function populateMakerSelect() {
+            const makerSelect = document.getElementById('maker-select');
+            const makers = [...new Set(mods.map(mod => mod.author))];
+            makers.forEach(maker => {
+                const option = document.createElement('option');
+                option.value = maker;
+                option.textContent = maker;
+                makerSelect.appendChild(option);
+            });
+        }
+
+        function toggleMakerSelect() {
+            const makerSelect = document.getElementById('maker-select');
+            makerSelect.style.display = makerSelect.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function filterByMaker() {
+            const selectedMaker = document.getElementById('maker-select').value;
+            if (selectedMaker) {
+                const filteredMods = mods.filter(mod => mod.author === selectedMaker);
+                displayMods(filteredMods);
+                updateSearchResults(filteredMods.length);
+            } else {
+                displayMods(mods);
+                updateSearchResults(mods.length);
+            }
+        }
+
+        document.getElementById('search-button').addEventListener('click', searchMods);
+        document.getElementById('search-box').addEventListener('input', searchMods);
+        document.getElementById('maker-button').addEventListener('click', toggleMakerSelect);
+        document.getElementById('maker-select').addEventListener('change', filterByMaker);
+
+        // Initialize the page
+        populateMakerSelect();
+        displayMods(mods);
+        updateSearchResults(mods.length);
+    </script>
+</body>
+</html>
